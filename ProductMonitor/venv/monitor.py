@@ -79,6 +79,10 @@ class Monitor:
                 change = listing.ListingChange(product, Change.NEW)
             self.__changes.append(change)
 
+        for product in pre_product_listings:
+            # The product is no longer being monitored
+            if product not in product_listings:
+                self.__changes.append(listing.ListingChange(product, Change.REMOVED))
         if self.__notifier is not None:
             self.__notifier.make_notification(self.__changes)
 
@@ -93,5 +97,6 @@ class Change(enum.Enum):
     NEGATIVE = 0,
     POSITIVE = 1,
     SAME = 2,
-    NEW = 3
+    NEW = 3,
+    REMOVED = 4
 

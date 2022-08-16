@@ -34,6 +34,7 @@ class LogDumpNotifier(Notifier):
 
         for change in changes:
             curr_change = change.get_change()
+            listing = str(change.get_listing())
             if self.__has_changed(curr_change):
                 if not any_changes:
                     any_changes = True
@@ -41,9 +42,11 @@ class LogDumpNotifier(Notifier):
                     log.write("Good News! The price for this product has decreased.\n")
                 elif curr_change == Change.NEGATIVE:
                     log.write("Bad News! The price for this product has increased.\n")
+                elif curr_change == Change.REMOVED:
+                    log.write("The following product is no longer being monitored, \n")
+                    log.write(f"{listing}\n")
                 else:
                     log.write("New Listing! Monitoring for this product has now begun.\n")
-                listing = str(change.get_listing())
                 log.write(f"{listing}\n")
         if any_changes:
             log.write(divider + "\n\n")
@@ -56,4 +59,5 @@ class LogDumpNotifier(Notifier):
     def __has_changed(change):
         return change == Change.POSITIVE or \
                change == Change.NEGATIVE or \
-               change == Change.NEW
+               change == Change.NEW or \
+               change == Change.REMOVED
