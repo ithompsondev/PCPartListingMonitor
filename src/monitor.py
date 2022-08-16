@@ -2,10 +2,10 @@ import enum
 import os
 import pickle
 import listing
-from typing import Union
+from respathing import *
 
 # TODO: os.path.join(sys.path[0], "product_listings.lt") where sys.path[0] is the absolute root path of the script
-SAVE_FILE = "product_listings.lt"
+SAVE_FILE = path_to_saved_listings()
 
 
 # Make a base monitor, this monitor is for wootware

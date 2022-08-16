@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 import os
 from monitor import Change
+from respathing import *
 
 divider = "="*80
 
@@ -9,13 +10,14 @@ divider = "="*80
     A notifier should keep track of whether it is the first time it is running.
     Useful for logging a welcome message.
 """
+SAVE_FILE = path_to_saved_listings()
+LISTING_LOG = path_to_listings_log_win() if is_windows() else path_to_listings_log_unix()
 
-# TODO: os.path.join(sys.path[0], "product_listings.lt") where sys.path[0] is the absolute root path of the script
-# TODO: os.path.join(sys.path[0], "listings_log.txt")
+
 class Notifier(ABC):
     def __init__(self, title: str):
         self._title = title
-        self._first_run = not os.path.exists("product_listings.lt")
+        self._first_run = not os.path.exists(SAVE_FILE)
 
     @abstractmethod
     def make_notification(self, changes: list):
@@ -27,7 +29,7 @@ class LogDumpNotifier(Notifier):
         super().__init__(title)
 
     def make_notification(self, changes: list):
-        log = open("listing_log.txt", "a")
+        log = open(LISTING_LOG, "a")
         any_changes = False
         if self._first_run:
             log.write(f"[{datetime.now()}] Starting new product listing monitor as {self._title}.\n\n")

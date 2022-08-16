@@ -2,6 +2,7 @@ from io import TextIOBase
 from typing import Union
 import requests
 from abc import ABC, abstractmethod
+from respathing import *
 
 """
     Read product listings from a text file named listings.txt
@@ -9,7 +10,9 @@ from abc import ABC, abstractmethod
     description
 """
 
-# TODO: FILE = os.path.join(sys.path[0], "listings.txt") listings.txt.txt for windows
+LISTINGS = path_to_listings_win() if is_windows() else path_to_listings_unix()
+
+
 class BaseListingGenerator(ABC):
     def __init__(self):
         self._listings: TextIOBase = self.__get_product_listings()
@@ -17,7 +20,7 @@ class BaseListingGenerator(ABC):
     @staticmethod
     def __get_product_listings() -> TextIOBase:
         try:
-            return open("listings.txt", "r")
+            return open(LISTINGS, "r")
         except FileNotFoundError:
             print("The product listings file: listings.txt, could not be found.")
             print("Ensure that the listings.txt file is in the same directory as this script.")
