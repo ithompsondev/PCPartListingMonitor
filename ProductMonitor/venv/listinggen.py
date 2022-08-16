@@ -9,7 +9,7 @@ from abc import ABC, abstractmethod
     description
 """
 
-
+# TODO: FILE = os.path.join(sys.path[0], "listings.txt") listings.txt.txt for windows
 class BaseListingGenerator(ABC):
     def __init__(self):
         self._listings: TextIOBase = self.__get_product_listings()

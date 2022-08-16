@@ -10,7 +10,8 @@ divider = "="*80
     Useful for logging a welcome message.
 """
 
-
+# TODO: os.path.join(sys.path[0], "product_listings.lt") where sys.path[0] is the absolute root path of the script
+# TODO: os.path.join(sys.path[0], "listings_log.txt")
 class Notifier(ABC):
     def __init__(self, title: str):
         self._title = title

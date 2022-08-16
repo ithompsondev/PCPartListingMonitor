@@ -4,6 +4,7 @@ import pickle
 import listing
 from typing import Union
 
+# TODO: os.path.join(sys.path[0], "product_listings.lt") where sys.path[0] is the absolute root path of the script
 SAVE_FILE = "product_listings.lt"
 
 
