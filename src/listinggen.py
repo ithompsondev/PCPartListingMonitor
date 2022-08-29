@@ -46,7 +46,7 @@ class BaseListingGenerator(ABC):
             print("There was a problem connecting to: " + listing)
         except requests.Timeout:
             print("The listing at: " + listing + ", took too long to respond")
-            system.exit(1)
+            sys.exit(1)
         except requests.exceptions.RequestException as req_ex:
             print("A problem was encountered when scraping the listing for: " + listing)
             print(req_ex)
@@ -67,11 +67,4 @@ class BadResponseException(Exception):
     def __init__(self, message: str):
         super().__init__(message)
 
-
-def main():
-    product_listings = get_product_listings()
-
-
-if __name__ == "__main__":
-    main()
 

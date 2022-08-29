@@ -8,7 +8,7 @@ def main():
     wootware = WootwareListingGenerator(monitor.load_product_listings())
     listings = wootware.parse_listings()
     monitor.save_product_listings(listings)
-    monitor.monitor_changes(wootware.get_product_listings(), listings)  # requires test, mock product listings
+    monitor.monitor_changes(wootware.get_product_listings(), listings)
 
 
 if __name__ == "__main__":

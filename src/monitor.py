@@ -1,8 +1,9 @@
 import enum
 import os
 import pickle
-import listing
+from listing import Listing, ListingChange
 from respathing import *
+from constants import Change
 
 # TODO: os.path.join(sys.path[0], "product_listings.lt") where sys.path[0] is the absolute root path of the script
 SAVE_FILE = path_to_saved_listings()
@@ -61,31 +62,49 @@ class Monitor:
     """
 
     # TODO: Case where listing saved file exists but a log does not!
-    def monitor_changes(self, pre_product_listings: list, product_listings: list):
-        for product in product_listings:
-            curr_price = product.get_price()
-            change = None
-            if product in pre_product_listings:
-                i = pre_product_listings.index(product)
-                old_price = pre_product_listings[i].get_price()
+    def monitor_changes(self, prev_product_listings: list, curr_product_listings: list):
+        for product in curr_product_listings:
+            curr_new_price = product.get_price()
 
-                if curr_price > old_price:
-                    change = listing.ListingChange(product, Change.NEGATIVE)
-                elif curr_price < old_price:
-                    change = listing.ListingChange(product, Change.POSITIVE)
-                else:
-                    change = listing.ListingChange(product, Change.SAME)
+            change = None
+            if product in prev_product_listings:
+                prev_listed_price = self.__get_previously_listed_price(product, prev_product_listings)
+                change = ListingChange(product, self.__compare_price_changes(curr_new_price, prev_listed_price))
             else:
-                change = listing.ListingChange(product, Change.NEW)
+                if curr_new_price == 0.0:
+                    change = ListingChange(product, Change.OUT_STOCK)  # useful when monitor is initially run
+                else:
+                    change = ListingChange(product, Change.NEW)
             self.__changes.append(change)
 
-        for pre_product in pre_product_listings:
+        # Loop through previously saved product listings and compare them against the new product listings
+        # If a product in the previously saved listing dne in the new listings then this means that the product
+        # will no longer be monitored
+        for pre_product in prev_product_listings:
             # The product is no longer being monitored
-            still_monitored = pre_product in product_listings
+            still_monitored = pre_product in curr_product_listings
             if not still_monitored:
-                self.__changes.append(listing.ListingChange(pre_product, Change.REMOVED))
+                self.__changes.append(ListingChange(pre_product, Change.REMOVED))
         if self.__notifier is not None:
             self.__notifier.make_notification(self.__changes)
+
+    @staticmethod
+    def __compare_price_changes(new_price: float, old_price: float) -> 'Change':
+        if new_price > old_price:
+            if old_price == 0.0:
+                return Change.IN_STOCK  # useful when monitoring is already in progress
+            return Change.NEGATIVE
+        elif new_price < old_price:
+            if new_price == 0.0:
+                return Change.OUT_STOCK
+            return Change.POSITIVE
+        else:
+            return Change.SAME
+
+    @staticmethod
+    def __get_previously_listed_price(product: Listing, prev_product_listings: list) -> float:
+        i = prev_product_listings.index(product)
+        return prev_product_listings[i].get_price()
 
     def get_changes(self):
         return self.__changes
@@ -93,11 +112,4 @@ class Monitor:
     def get_notifier(self):
         return self.__notifier
 
-
-class Change(enum.Enum):
-    NEGATIVE = 0,
-    POSITIVE = 1,
-    SAME = 2,
-    NEW = 3,
-    REMOVED = 4
 

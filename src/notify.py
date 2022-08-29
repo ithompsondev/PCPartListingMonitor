@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
 import os
-from monitor import Change
+from constants import Change
 from respathing import *
 
 divider = "="*80
@@ -47,6 +47,10 @@ class LogDumpNotifier(Notifier):
                     log.write("Bad News! The price for this product has increased.\n")
                 elif curr_change == Change.REMOVED:
                     log.write("The following product is no longer being monitored, \n")
+                elif curr_change == Change.OUT_STOCK:
+                    log.write("Bad News! The product is now out of stock.\n")
+                elif curr_change == Change.IN_STOCK:
+                    log.write("Good News! The product is back in stock.\n")
                 else:
                     log.write("New Listing! Monitoring for this product has now begun.\n")
                 log.write(f"{listing}\n")
@@ -62,4 +66,6 @@ class LogDumpNotifier(Notifier):
         return change == Change.POSITIVE or \
                change == Change.NEGATIVE or \
                change == Change.NEW or \
-               change == Change.REMOVED
+               change == Change.REMOVED or \
+               change == Change.IN_STOCK or \
+               change == Change.OUT_STOCK

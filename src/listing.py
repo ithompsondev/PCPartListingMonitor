@@ -1,6 +1,6 @@
 from typing import Union
 from datetime import datetime
-from monitor import Change
+from constants import Change
 
 # convert to dataclass?
 
@@ -83,3 +83,6 @@ class ListingChange:
 
     def get_change(self):
         return self.__change
+
+'Corsair CMH32GX4M2E3200C16 Vengeance RGB Pro SL 32GB (2x16GB) DDR4-3200MHz CL16 1.35V Black Desktop Memory'
+'Corsair CMH32GX4M2E3200C16 Vengeance RGB Pro SL 32GB (2x16GB) DDR4-3200MHz CL16 1.35V Black Desktop Memory'
